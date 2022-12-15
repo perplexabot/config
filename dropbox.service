@@ -1,0 +1,9 @@
+# this file is located in: /home/username/.config/systemd/user
+[Unit]
+Description=Dropbox Daemon
+
+[Service]
+ExecStart=/home/username/.dropbox-dist/dropboxd
+
+[Install]
+WantedBy=default.target

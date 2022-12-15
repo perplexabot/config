@@ -1,0 +1,168 @@
+" set leader character for all key remaps
+let mapleader=","
+
+""""""""""""""""""""""""""""""""""
+"       GENERAL SETTINGS
+""""""""""""""""""""""""""""""""""
+
+" Set indent to 4 spaces
+" set tabs to be spaces
+set tabstop=4 softtabstop=0 expandtab shiftwidth=4
+
+" set line numbers to show
+set number
+
+" set fold method and default to no folds when a file is open
+set foldmethod=indent
+set nofoldenable
+
+" set ctags
+set tags=./.tags;/
+
+" Don't replace clipboard data with overwritten data
+xnoremap p pgvy
+
+" show last command on bottom right
+set showcmd
+
+" show current cursor line
+set cursorline
+
+" cool file auto complete menu
+set wildmenu
+
+" search while typing
+set incsearch
+" highlight all search results at once
+set hlsearch
+
+" where the fuck is my syntax color
+:filetype indent plugin on
+:syntax on
+:set background=dark
+
+""""""""""""""""""""""""""""""""""
+"       ADDING PLUGINS 
+"   USING BUILT-IN PKG-MNGR
+""""""""""""""""""""""""""""""""""
+
+" clone the below links into: /home/$USER/.local/share/nvim/site/pack/git_repos/start
+"   https://github.com/ctrlpvim/ctrlp.vim.git
+"   https://github.com/vim-airline/vim-airline.git
+"   https://github.com/nelstrom/vim-visual-star-search.git
+"   https://github.com/dense-analysis/ale
+"   https://github.com/psf/black.git
+"   https://github.com/morhetz/gruvbox.git
+"   https://github.com/hashivim/vim-terraform.git
+
+
+""""""""""""""""""""""""""""""""""
+"       PLUGIN SETTINGS
+""""""""""""""""""""""""""""""""""
+
+" set some default opetions for ctrlp
+let g:ctrlp_switch_buffer = 0
+let g:ctrlp_working_path_mode = 0
+
+" have ale show linter name in error/warning message
+let g:ale_echo_msg_error_str = 'E'
+let g:ale_echo_msg_warning_str = 'W'
+let g:ale_echo_msg_format = '[%linter%] %s [%severity%]'
+
+" only use these linters for python
+let g:ale_linters = {
+\	'python': ['flake8', 'pydocstyle'],
+\   'yaml' : ['ansible-lint', 'yamllint'],
+\   'sh': ['shellcheck'],
+\   'tf': ['tflint']
+\}
+
+" flake8 options
+"let g:ale_python_flake8_options = '--max-line-length=100 --ignore=E203,W503'
+let g:ale_python_flake8_options = '--max-line-length=100 --ignore=BLK100'
+
+" fix the fixer and update the older
+" let g:python3_host_prog = '/usr/bin/python3.6'
+" let g:python_host_prog = '/usr/bin/python3.7'
+
+" set options for black fixer
+let g:ale_python_black_options = '-S -l 100'
+
+" use black fixer for python
+let g:ale_fixers = {
+\   'python': ['black'],
+\   'tf': ['terraform']
+\}
+
+" Set this variable to 1 to fix files when you save them.
+let g:ale_fix_on_save = 1
+
+""""""""""""""""""""""""""""""""""
+"       CUSTOM SHORTCUTS 
+""""""""""""""""""""""""""""""""""
+
+" shortcut for removing trailing white space
+nnoremap <leader>w :%s/\s\+$//g<CR>
+
+" remap :nohlsearch to <comma><space> to turn off all highlights
+nnoremap <leader><space> :nohlsearch<CR>
+
+" shortcut to toggle spell check to yes/no
+nnoremap <leader>ns :set nospell<CR>
+nnoremap <leader>ys :set spell<CR>
+
+" shortcut to wrap to yes/no
+nnoremap <leader>nw :set nowrap<CR>
+nnoremap <leader>yw :set wrap<CR>
+
+" shortcut to set relativenumber to yes/no
+nnoremap <leader>nn :set norelativenumber<CR>
+nnoremap <leader>yn :set relativenumber<CR>
+
+" shortcut to set groovy syntax yes/np
+nnoremap <leader>ng  :syntax on<CR>
+nnoremap <leader>yg  :set syntax=groovy<CR>
+
+" open terminal in split buffer
+command! -nargs=* T split | terminal <args>
+command! -nargs=* VT vsplit | terminal <args>
+
+" go back to normal mode when in terminal using esc
+:tnoremap <Esc> <C-\><C-n>
+
+" xxd hex mod
+nnoremap <leader>yx :%!xxd<CR>
+nnoremap <leader>nx :%!xxd -r<CR>
+
+""""""""""""""""""""""""""""""""""
+"       OTHER
+""""""""""""""""""""""""""""""""""
+" cscope -bq  $(find . -iname '*.py')
+if has("cscope")
+    set csprg=/usr/local/bin/cscope
+    set csto=0
+    set cst
+    " add any database in current directory
+    if filereadable("cscope.out")
+        silent cs add cscope.out
+    " else add database pointed to by environment
+    elseif $CSCOPE_DB != ""
+        silent cs add $CSCOPE_DB
+    endif
+endif
+
+" enable true color and set colorscheme"
+" FOR SOME ODD ASS REASON USING TERMGUICOLORS RESULTS IN SHITTY BORDER COLORS
+" WHEN TERMINAL IS RESIZED! FUCK IT. FIXED BY CHANGING TERM EMULATOR (from
+" xterm to st)
+set termguicolors
+colorscheme gruvbox
+
+" Load all of the helptags now, after plugins have been loaded.
+" All messages and errors will be ignored.
+silent! helptags ALL
+
+" enable spell check
+" don't forget to run mkspell ~/.config/nvim/spell/techspeak.utf-8.add
+set spellfile=~/.config/nvim/spell/techspeak.utf-8.add
+set spell spelllang=en_us
